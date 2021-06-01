@@ -64,26 +64,31 @@ def evaluatePosts():
     if not postcount:
         postcount = 10
 
-    for submission in reddit.subreddit(subreddit).new(limit=postcount):
-        biggestNumber = 0
-        numbers = re.findall(r'\d+', submission.title)
+    new_submissions = reddit.subreddit(subreddit).new(limit=postcount)
 
-        if numbers:
-            for num in numbers:
-                if int(num) > int(biggestNumber):
-                    biggestNumber = num
-
-        else:
-            print("Couldn't find price...")
-            # OCR temporarily disabled until included in requirements
-            continue
-
-        isAdded = db.add_turnips(submission.title, submission.created, submission.shortlink)
-
-        if isAdded == 'false':
-            return
-        else:
-            if int(biggestNumber) >= int(minimum_price):
-                telegram.sendText(submission.title, biggestNumber, submission.shortlink)
+    # iterate over new submissions from oldest to newest
+    for submission in reversed(list(new_submissions)):
+        
+        # if the submission is Active and we haven't already considered it, then do something
+        if submission.link_flair_text == 'Active' and not db.does_submission_exists(submission.id):
+            
+            numbers = re.findall(r'\d+', submission.title)
+            if numbers:
+                # use list comprehension to easily get biggest number
+                biggest_number = max([int(num) for num in numbers])
             else:
-                print("Price is lower than minimum value. No notification")
+                print("[RD]({id}) - Couldn't find price in title '{title}'!".format(id=submission.id, title=submission.title))
+                continue
+            
+            if (biggest_number > int(minimum_price)):
+                # try adding to database
+                if db.add_submission(submission):
+                    print("[RD]({id}) - Submission added, sending message".format(id=submission.id))
+                    telegram.sendText(submission.title, biggest_number, submission.created_utc, submission.shortlink)
+                else:
+                    print("[RD]({id}) - Error while adding submission to database".format(id=submission.id))
+            else:
+                print("[RD]({id}) - Price '{price}' is lower than minimum value".format(price=biggest_number,id=submission.id))
+        else:
+            # else ignore submission
+            pass
