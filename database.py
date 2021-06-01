@@ -34,12 +34,12 @@ def does_submission_exists(id):
 
 def add_submission(sub):
     if not does_submission_exists(sub.id):
-        print("[DB] Adding submission '{id}' to db".format(id=sub.id))
+        print("[DB]({id}) - Adding to db".format(id=sub.id))
         db = sqlite3.connect(DB_PATH)
         cursor = db.cursor()
         cursor.execute('''INSERT INTO submissions(id,title,created,shortlink) VALUES(?,?,?,?)''', (sub.id,sub.title,sub.created_utc,sub.shortlink))
         db.commit()
         return True
     else:
-        print("[DB] Submission '{id}' already exists".format(id=sub.id))
+        print("[DB]({id}) - Submission already exists in db".format(id=sub.id))
         return False

@@ -23,8 +23,8 @@ Here's the link if you want to check it out:
     response = get(send_text)
 
     if response.status_code == 200:
-        print("[TG] Message sent correctly")
+        print("[TG] - Message sent correctly")
         return True
     else:
-        print("[TG] Error while sending the message")
+        print("[TG] - Error while sending the message")
         return False

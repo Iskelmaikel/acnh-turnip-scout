@@ -77,18 +77,18 @@ def evaluatePosts():
                 # use list comprehension to easily get biggest number
                 biggest_number = max([int(num) for num in numbers])
             else:
-                print("[RD] Couldn't find price of submission '{id}' with title '{title}'!".format(id=submission.id, title=submission.title))
+                print("[RD]({id}) - Couldn't find price in title '{title}'!".format(id=submission.id, title=submission.title))
                 continue
             
             if (biggest_number > int(minimum_price)):
                 # try adding to database
                 if db.add_submission(submission):
-                    print("[RD] Submission '{id}' added, sending message".format(id=submission.id))
+                    print("[RD]({id}) - Submission added, sending message".format(id=submission.id))
                     telegram.sendText(submission.title, biggest_number, submission.created_utc, submission.shortlink)
                 else:
-                    print("[RD] Error while adding submission '{id}' to database".format(id=submission.id))
+                    print("[RD]({id}) - Error while adding submission to database".format(id=submission.id))
             else:
-                print("[RD] Price '{price}' of submission '{id}' is lower than minimum value".format(price=biggest_number,id=submission.id))
+                print("[RD]({id}) - Price '{price}' is lower than minimum value".format(price=biggest_number,id=submission.id))
         else:
             # else ignore submission
             pass
