@@ -1,6 +1,6 @@
 # Animal Crossing Turnip Price Scout
 
-Turnip Price Scout (TPS) is a Python application that scouts turnip prices by crawling the [/r/turnipexchange](https://www.reddit.com/r/acturnips/) subreddit.
+Turnip Price Scout (TPS) is a Python application that scouts turnip prices by crawling your favorite subreddits. By default the application scouts the [/r/acturnips](https://www.reddit.com/r/acturnips/) subreddit.
 
 It scouts the subreddit at given intervals and keeps track of turnip prices. When new offers are found, it will send
 messages to the configured Telegram account.
